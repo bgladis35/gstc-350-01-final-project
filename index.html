@@ -18,7 +18,19 @@
       margin: 0;
       height: 100%;
     }
-
+	
+	footer{
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: 300px;
+	left: 35%;
+	background-color: black;
+	}
+	
+	ul{
+	position: absolute;}
+		
   </style>
 
   <script src="http://js.arcgis.com/3.12/"></script>
@@ -33,29 +45,201 @@
      **/
 
     var map;
+	
+	
 
     require([
           "esri/map",
-          "esri/layers/ArcGISDynamicMapServiceLayer",
-          "esri/layers/ImageParameters",
+          "esri/layers/FeatureLayer",
+          "esri/geometry/Point",
+		  "esri/symbols/SimpleMarkerSymbol",
+		  "esri/graphic",
+		  "esri/Color",
           "dojo/domReady!"
         ],
-        function (Map, ArcGISDynamicMapServiceLayer, ImageParameters) {
+        function (Map, FeatureLayer, Point, SimpleMarkerSymbol, Graphic, Color) {
 
           map = new Map("mapDiv", {
-            basemap: "streets",
-            center: [48.49, 74.82],
-            zoom: 7
+            basemap: "hybrid",
+            center: [-95.665, 37.6],
+            zoom: 4,
+	    sliderPosition: "bottom-left",
           });
 
           // Create a new layer and add that layer to the map.
-          var lyr = new ArcGISDynamicMapServiceLayer("http://stg.tsstools.com/arcgis/rest/services/txdot/lrs/MapServer");
-          map.addLayer(lyr);
+         // var lyr = new FeatureLayer("http://stg.tsstools.com/arcgis/rest/services/hu/hu2/MapServer/0");
+          //map.addLayer(lyr);
+		  
+		 window.goToLatLon = function (lat, lon){
+			var point = new Point(lon, lat);
+			map.centerAndZoom(point, 17);
+			var marker = new SimpleMarkerSymbol();
+			marker.style = SimpleMarkerSymbol.STYLE_DIAMOND;
+			marker.color = new Color ([0, 0, 255]);
+			//SimpleMarkerSymbol.STYLE_DIAMOND, 10, new Color ([0, 0, 255])
+						 
+			var graphic = new Graphic(point, marker);
+			
+			map.graphics.add(graphic);
+	}
         });
   </script>
+  <script>
+var timeout	= 500;
+var closetimer	= 0;
+var ddmenuitem	= 0;
+
+// open hidden layer
+function mopen(id)
+{	
+	// cancel close timer
+	mcancelclosetime();
+
+	// close old layer
+	if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+
+	// get new layer and show it
+	ddmenuitem = document.getElementById(id);
+	ddmenuitem.style.visibility = 'visible';
+
+}
+// close showed layer
+function mclose()
+{
+	if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+}
+
+// go close timer
+function mclosetime()
+{
+	closetimer = window.setTimeout(mclose, timeout);
+}
+
+// cancel close timer
+function mcancelclosetime()
+{
+	if(closetimer)
+	{
+		window.clearTimeout(closetimer);
+		closetimer = null;
+	}
+}
+
+</script>
+
+<style>
+#sddm
+{	margin: 0;
+	padding: 0;
+	z-index: 30}
+
+#sddm li
+{	margin: 0;
+	padding: 0;
+	list-style: none;
+	float: left;
+	font: bold 11px arial}
+
+#sddm li a
+{	display: block;
+	margin: 0 1px 0 0;
+	padding: 4px 10px;
+	width: 60px;
+	background: #5970B2;
+	color: #FFF;
+	text-align: center;
+	text-decoration: none}
+
+#sddm li a:hover
+{	background: #49A3FF}
+
+#sddm div
+{	position: absolute;
+	visibility: hidden;
+	margin: 0;
+	padding: 0;
+	background: #EAEBD8;
+	border: 1px solid #5970B2}
+
+	#sddm div a
+	{	position: relative;
+		display: block;
+		margin: 0;
+		padding: 5px 10px;
+		width: auto;
+		white-space: nowrap;
+		text-align: left;
+		text-decoration: none;
+		background: #EAEBD8;
+		color: #2875DE;
+		font: 11px arial}
+
+	#sddm div a:hover
+	{	background: #49A3FF;
+		color: #FFF}
+</style>
+
+<body>
+<ul id="sddm">
+    <li><a href="#" 
+        onmouseover="mopen('m1')" 
+        onmouseout="mclosetime()">American League</a>
+        <div id="m1" 
+            onmouseover="mcancelclosetime()" 
+            onmouseout="mclosetime()">
+        <a href="#" onclick="goToLatLon(39.284072,-76.622638)">Baltimore Orioles</a>
+        <a href="#" onclick="goToLatLon(42.346676,-71.097218)">Boston Red Sox</a>
+        <a href="#" onclick="goToLatLon(41.830314,-87.634969)">Chicago White Sox</a>
+		<a href="#" onclick="goToLatLon(41.4955335,-81.685955)">Cleveland Indians</a>
+		<a href="#" onclick="goToLatLon(42.338998,-83.04852)">Detroit Tigers</a>
+		<a href="#" onclick="goToLatLon(29.7568606,-95.3554924)">Houston Astros</a>
+		<a href="#" onclick="goToLatLon(39.0514352,-94.4802115)">Kansas City Royals</a>
+		<a href="#" onclick="goToLatLon(33.800308,-117.882732)">Los Angeles Angels</a>
+		<a href="#" onclick="goToLatLon(44.981708,-93.277338)">Minnesota Twins</a>
+		<a href="#" onclick="goToLatLon(40.829643,-73.926174)">New York Yankees</a>
+		<a href="#" onclick="goToLatLon(37.751595,-122.200546)">Oakland Athletics</a>
+		<a href="#" onclick="goToLatLon(47.59102,-122.333378)">Seattle Mariners</a>
+		<a href="#" onclick="goToLatLon(27.768225,-82.653392)">Tampa Bay Rays</a>
+		<a href="#" onclick="goToLatLon(32.7516735,-97.0824151)">Texas Rangers</a>
+		<a href="#" onclick="goToLatLon(43.6418519,-79.3890051)">Toronto Blue Jays</a>
+		
+        </div>
+    </li>
+    <li><a href="#" 
+        onmouseover="mopen('m2')" 
+        onmouseout="mclosetime()">National League</a>
+        <div id="m2" 
+            onmouseover="mcancelclosetime()" 
+            onmouseout="mclosetime()">
+        <a href="#" onclick="goToLatLon(33.44543,-112.066702)">Arizona Diamondbacks</a>
+        <a href="#" onclick="goToLatLon(33.736728,-84.388852)">Atlanta Braves</a>
+        <a href="#" onclick="goToLatLon(41.948438,-87.655333)">Chicago Cubs</a>
+		<a href="#" onclick="goToLatLon(39.097931,-84.508151)">Cincinnati Reds</a>
+		<a href="#" onclick="goToLatLon(39.755882,-104.994178)">Colorado Rockies</a>
+		<a href="#" onclick="goToLatLon(34.072736,-118.240616)">Los Angeles Dodgers</a>
+		<a href="#" onclick="goToLatLon(25.778664,-80.22028)">Miami Marlins</a>
+		<a href="#" onclick="goToLatLon(43.028603,-87.971836)">Milwaukee Brewers</a>
+		<a href="#" onclick="goToLatLon(40.757088,-73.845821)">New York Mets</a>
+		<a href="#" onclick="goToLatLon(39.906057,-75.166495)">Philadelphia Phillies</a>
+		<a href="#" onclick="goToLatLon(40.446855,-80.005666)">Pittsburgh Pirates</a>
+		<a href="#" onclick="goToLatLon(32.707709,-117.157086)">San Diego Padres</a>
+		<a href="#" onclick="goToLatLon(37.778595,-122.38927)">San Francisco Giants</a>
+		<a href="#" onclick="goToLatLon(38.622495,-90.19311)">St. Louis Cardinals</a>
+		<a href="#" onclick="goToLatLon(38.87301,-77.007433)">Washington Nationals</a>
+        </div>
+    </li>
+    
+</ul>
+<div style="clear:both"></div>
 </head>
 
 <body>
-<div id="mapDiv"></div>
+<div id="mapDiv"> </div>
+<footer>
+
+
+
+	
+</footer>
 </body>
 </html>
